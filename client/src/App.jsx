@@ -41,6 +41,26 @@ function App() {
         }
     }, [token]);
 
+    // Global Error Handler (Auto Logout on 401)
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    setToken(null);
+                    setCurrentUser(null);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('authUser');
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, []);
+
     const handleLogin = (newToken, newUser) => {
         setToken(newToken);
         setCurrentUser(newUser);
