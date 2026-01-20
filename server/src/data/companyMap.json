@@ -1,0 +1,15 @@
+{
+  "sbsempreendimentos.com.br": {
+    "name": "SBS",
+    "ignored": false
+  },
+  "schindler.com": {
+    "name": "Atlas Schindler",
+    "ignored": false,
+    "responsible": "alexandre.fusco@sbsempreendimentos.com.br"
+  },
+  "gamil.com": {
+    "name": "",
+    "ignored": true
+  }
+}

@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  domain      String   @unique
+  name        String
+  ignored     Boolean  @default(false)
+  responsible String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Group {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  responsible String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model IgnoredGroup {
+    id          Int      @id @default(autoincrement())
+    name        String   @unique
+}
+
+model SubjectMap {
+  subject     String   @id
+  groupName   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EmailAccount {
+  id        Int      @id @default(autoincrement())
+  user      String   @unique
+  password  String
+  host      String
+  port      Int
+  tls       Boolean  @default(true)
+  ignored   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  emails    Email[]
+}
+
+model Email {
+  id            Int          @id @default(autoincrement())
+  messageId     String       @unique
+  subject       String
+  from          String
+  to            String
+  date          DateTime
+  snippet       String       @db.Text
+  fullBody      String?      @db.LongText
+  extractedTags String?      @db.Text // JSON string
+  
+  accountId     Int
+  account       EmailAccount @relation(fields: [accountId], references: [id])
+  
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([accountId])
+  @@index([date])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
